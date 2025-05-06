@@ -1,5 +1,5 @@
 import flet as ft
-from routes import home, login
+from routes import home, login, cadastro, search
 
 def main(page: ft.Page): 
     page.theme_mode = ft.ThemeMode.LIGHT
@@ -15,11 +15,15 @@ def main(page: ft.Page):
         if page.route == "/login": 
             page.views.append(login.View(page)) 
         elif page.route == '/home': 
-            page.views.append(home.View(page)) 
+            page.views.append(home.View(page))
+        elif page.route == "/cadastro":
+            page.views.append(cadastro.View(page))
+        elif page.route == "/search":
+            page.views.append(search.View(page))
         page.update()
 
     page.on_route_change = route_change
-    page.go("/home")
+    page.go("/login")
 
     page.add(ft. Text("Testando"))
 
