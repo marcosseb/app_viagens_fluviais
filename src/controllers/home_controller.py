@@ -1,4 +1,9 @@
 import flet as ft
 
-def open_search(e: ft.ControlEvent):
-    e.page.go("/search")
+def open_search(e, origem, destino, embarque):
+    e.go("/search", query={
+        "origem": origem,
+        "destino": destino,
+        "embarque": embarque
+    })
+

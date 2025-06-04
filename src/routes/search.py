@@ -1,53 +1,23 @@
 import flet as ft
+from controllers import search_controller
+from models.db_connection import DbConnection
+from urllib.parse import urlparse, parse_qs
 
-passagem1 = {
-    "origem": "Óbidos",
-    "destino": "Belém",
-    "data": "2023-10-01",
-    "horario": "10:00",
-    "preco": 100.0,
-}
-
-passagem2 = {
-    "origem": "Alenquer",
-    "destino": "Óbidos",
-    "data": "2023-10-02",
-    "horario": "12:00",
-    "preco": 120.0,
-}
-
-def create_passage_card(passage):
-    return ft.Card(
-        content=ft.Container(
-            content=ft.Column(
-                [
-                    ft.ListTile(
-                        leading=ft.Icon(ft.icons.DIRECTIONS_BUS),
-                        title=ft.Text(f"{passage['origem']} → {passage['destino']}"),
-                        subtitle=ft.Text(f"Data: {passage['data']} • Horário: {passage['horario']}"),
-                    ),
-                    ft.Row(
-                        [
-                            ft.Text(f"R$ {passage['preco']:.2f}", 
-                                   size=20, weight=ft.FontWeight.BOLD),
-                            ft.FilledButton("Comprar"),
-                        ],
-                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                    ),
-                ],
-                spacing=5,
-            ),
-            width=400,
-            padding=10,
-        )
-    )
+db = DbConnection()
 
 def View(page: ft.Page):
+    
+    parsed_url = urlparse(page.route)
+    query_params = parse_qs(parsed_url.query)
+    origem = query_params.get("origem", [""])[0]
+    destino = query_params.get("destino", [""])[0]
+    embarque = query_params.get("embarque", [""])[0]
     page.title = "Busca"
-
+    print(f"Origem: {origem}, Destino: {destino}, Embarque: {embarque}")
+    
     appbar = ft.AppBar(
         leading=ft.Icon(ft.icons.MENU),
-        title=ft.Text("Home"),
+        title=ft.Text("Busca"),
         center_title=True,
         bgcolor=ft.colors.SURFACE_VARIANT,
         actions=[
@@ -62,19 +32,20 @@ def View(page: ft.Page):
         ],
     )
 
-    passage_cards = ft.Column(
-        [
-            create_passage_card(passagem1),
-            create_passage_card(passagem2),
-        ],
-        spacing=20,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    label = ft.Text("Resultados da Busca", size=24, weight=ft.FontWeight.BOLD)
+    text = ft.Text(
+        f"Origem: {origem}, Destino: {destino}, Embarque: {embarque}",
+        size=18,
+        weight=ft.FontWeight.NORMAL
     )
 
     return ft.View(
-        "/",
         appbar=appbar,
-        controls=[passage_cards],
-        padding=20,
-        scroll=ft.ScrollMode.AUTO,
+        controls=[
+            label,
+            text,
+        ]
     )
+    
+
+    
