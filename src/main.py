@@ -20,7 +20,7 @@ def main(page: ft.Page):
             page.views.append(home.View(page))
         elif page.route == "/cadastro":
             page.views.append(signup.View(page))
-        elif page.route == "/search":
+        elif page.route.startswith("/search"):
             page.views.append(search.View(page))
         elif page.route == "/payment":
             page.views.append(payment.View(page))

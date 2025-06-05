@@ -30,16 +30,31 @@ class DbConnection:
         ''')
         return self.cursor.fetchall()
 
-    def search_travels(self, origem, destino, embarque):
+    def search_travels(self, origem_cidade, destino_cidade, embarque):
+        """
+        Busca viagens por CIDADE (não por nome do porto)
+        """
         self.cursor.execute('''
-            SELECT p1.nome, p2.nome, v.data_partida
+            SELECT v.id, p1.nome as porto_origem, p2.nome as porto_destino, 
+                   p1.cidade as cidade_origem, p2.cidade as cidade_destino, 
+                   v.data_partida, e.nome as embarcacao, e.capacidade
             FROM viagens v
             JOIN portos p1 ON v.id_porto_origem = p1.id
             JOIN portos p2 ON v.id_porto_destino = p2.id
-            WHERE p1.nome = ? AND p2.nome = ? AND v.data_partida = ?
-        ''', (origem, destino, embarque))
+            JOIN embarcacoes e ON v.id_embarcacao = e.id
+            WHERE p1.cidade = ? AND p2.cidade = ? AND v.data_partida = ?
+            ORDER BY v.data_partida
+        ''', (origem_cidade, destino_cidade, embarque))
         return self.cursor.fetchall()
     
+    def get_portos_by_cidade(self, cidade):
+        """
+        Retorna todos os portos de uma cidade
+        """
+        self.cursor.execute('''
+            SELECT id, nome FROM portos WHERE cidade = ?
+        ''', (cidade,))
+        return self.cursor.fetchall()
 
     def close(self):
         self.conn.close()

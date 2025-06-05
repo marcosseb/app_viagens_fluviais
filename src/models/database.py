@@ -68,10 +68,9 @@ class GerenciadorPassagensBarco:
         ''')
         self.conn.commit()
 
-    
-db = GerenciadorPassagensBarco()
 
 if __name__ == "__main__":
+    db = GerenciadorPassagensBarco()
     # Teste as funções aqui
     db.adicionar_porto("Porto Óbidos", "Óbidos", "Pará")
     db.adicionar_porto("Porto Santarém", "Santarém", "Pará")

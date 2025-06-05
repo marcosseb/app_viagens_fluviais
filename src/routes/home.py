@@ -2,53 +2,51 @@ import flet as ft
 import datetime
 from models.db_connection import DbConnection
 from controllers import home_controller
-from urllib.parse import urlparse
-#import sqlite3
-
-# conn = sqlite3.connect("./storage/data/passagens_barco.db", check_same_thread=False)
-
-# def listar_cidades():
-#     c = conn.cursor()
-#     try:
-#         c.execute('SELECT DISTINCT cidade FROM portos')
-#         cities = c.fetchall()
-#         return [row[0] for row in cities]
-#     finally:
-#         c.close()  # Ensure cursor is closed after operation
 
 db = DbConnection()
 
-for cidade in db.listar_cidades():
-    print("Cidade:" + cidade)
-
-print(db.listar_cidades())
-print(db.listar_passagens())
+print(db.listar_viagens())
 
 def View(page: ft.Page):
     page.title = "Home"
+    
+    # Variável para armazenar a data selecionada
+    selected_date = None
+    # Componente para exibir a data selecionada
+    date_display = ft.Text("Nenhuma data selecionada")
 
-    #def handle_change(e):
-    #    return_value = e.control.value.strftime('%Y-%m-%d') if e.control.value else "No date selected"
-    #    return return_value
+    # Função para lidar com mudança de data
+    def handle_date_change(e):
+        nonlocal selected_date
+        if e.control.value:
+            selected_date = e.control.value.strftime('%Y-%m-%d')
+            date_display.value = selected_date
+            date_display.update()
 
-    #def handle_dismissal(e):
-    #    page.add(ft.Text(f"DatePicker dismissed"))
+    # Função para abrir o DatePicker
+    def open_date_picker(e):
+        # Criar nova instância do DatePicker cada vez que o botão é clicado
+        date_picker = ft.DatePicker(
+            first_date=datetime.datetime.now(),
+            last_date=datetime.datetime.now() + datetime.timedelta(days=365),
+            on_change=handle_date_change,
+        )
+        page.open(date_picker)
 
-    # Fetch cities from the database
     cidades = db.listar_cidades()
 
     appbar = ft.AppBar(
-        leading=ft.Icon(ft.icons.MENU),
+        leading=ft.Icon(ft.Icons.MENU),
         title=ft.Text("Home"),
         center_title=True,
-        bgcolor=ft.colors.SURFACE_VARIANT,
+        bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
         actions=[
-            ft.IconButton(ft.icons.SEARCH, tooltip="Search"),
-            ft.IconButton(ft.icons.NOTIFICATIONS, tooltip="Notifications"),
+            ft.IconButton(ft.Icons.SEARCH, tooltip="Search"),
+            ft.IconButton(ft.Icons.NOTIFICATIONS, tooltip="Notifications"),
             ft.PopupMenuButton(
                 items=[
-                    ft.PopupMenuItem(text="Settings", icon=ft.icons.SETTINGS),
-                    ft.PopupMenuItem(text="Logout", icon=ft.icons.LOGOUT),
+                    ft.PopupMenuItem(text="Settings", icon=ft.Icons.SETTINGS),
+                    ft.PopupMenuItem(text="Logout", icon=ft.Icons.LOGOUT),
                 ],
             ),
         ],
@@ -69,50 +67,29 @@ def View(page: ft.Page):
         options=[ft.dropdown.Option(cidade) for cidade in cidades],
         width=300,
     )
-
-    print(page)
-
-    date = None
-
-    def on_date_change(e):
-        nonlocal date
-        date = e.control.value.strftime('%Y-%m-%d') if e.control.value else None
-        #print(f"Selected date: {date}")
     
-
-    calendar = ft.DatePicker(
-                first_date=datetime.datetime(year=2000, month=10, day=1),
-                last_date=datetime.datetime(year=2025, month=12, day=30),
-                on_change= on_date_change,  
-            )
-    
-    
-    
-    
+    # Botão para selecionar data
     embarque = ft.ElevatedButton(
-        "Pick date",
-        icon=ft.icons.CALENDAR_MONTH,
-        on_click=lambda e: page.open(calendar),
+        "Selecionar data",
+        icon=ft.Icons.CALENDAR_MONTH,
+        on_click=open_date_picker,
     )
     
-    test_query = 'banana'
-
     pesquisar = ft.ElevatedButton(
         text="Pesquisar",
-        icon=ft.icons.SEARCH,
-        bgcolor=ft.colors.PRIMARY,
-        color=ft.colors.WHITE,
-        on_click=lambda e: page.go(
-            f"/search?origem={origem.value}&destino={destino.value}&embarque={date}"
+        icon=ft.Icons.SEARCH,
+        bgcolor=ft.Colors.PRIMARY,
+        color=ft.Colors.WHITE,
+        on_click=lambda e: home_controller.open_search(
+            e, 
+            origem.value, 
+            destino.value, 
+            selected_date if selected_date else ""
         )
     )
 
     
     
-
-    
-
-
     return ft.View(
         appbar=appbar,
         padding=20,
@@ -122,7 +99,7 @@ def View(page: ft.Page):
             title,
             origem,
             destino,
-            embarque,
+            ft.Row([embarque, date_display]),
             pesquisar,
         ],
     )
