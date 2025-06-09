@@ -1,4 +1,4 @@
 import flet as ft
 
-def open_payment(e: ft.ControlEvent):
-    e.page.go("/payment")
+def open_payment(e: ft.ControlEvent, id):
+    e.page.go(f"/payment?id={id}")

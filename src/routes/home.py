@@ -99,7 +99,8 @@ def View(page: ft.Page):
             title,
             origem,
             destino,
-            ft.Row([embarque, date_display]),
+            embarque,
+            date_display,
             pesquisar,
         ],
     )

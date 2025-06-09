@@ -71,22 +71,5 @@ class GerenciadorPassagensBarco:
 
 if __name__ == "__main__":
     db = GerenciadorPassagensBarco()
-    # Teste as funções aqui
-    db.adicionar_porto("Porto Óbidos", "Óbidos", "Pará")
-    db.adicionar_porto("Porto Santarém", "Santarém", "Pará")
-    db.adicionar_embarcacao("Embarcação A", 100)
-    db.adicionar_assento(1, 1, "Normal")
-    db.adicionar_passageiro("João")
-    db.adicionar_viagem(1, 1, 2, "2025-10-10")
-    db.adicionar_viagem(1, 1, 2, "2025-10-10")
-    db.adicionar_passagem(1, 1, 1)
-
-    for cidade in db.listar_cidades():
-        print(cidade)
-
-    for viagem in db.listar_viagens():
-        print(viagem)
-
-    for passagem in db.listar_passagens():
-        print(passagem)
+    
     

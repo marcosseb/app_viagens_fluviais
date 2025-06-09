@@ -3,7 +3,7 @@ import flet as ft
 def open_search(e: ft.ControlEvent, origem: str, destino: str, embarque: str):
     # Validar parâmetros antes de navegar
     if not origem or not destino:
-        e.page.show_snack_bar(ft.SnackBar(ft.Text("Selecione origem e destino!"), open=True))
+        e.page.open(ft.SnackBar(ft.Text("Selecione origem e destino!"), open=True))
         return
     
     # Construir URL corretamente

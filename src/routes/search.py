@@ -43,7 +43,7 @@ def View(page: ft.Page):
             appbar=appbar,
             controls=[
                 ft.Text("Erro: Parâmetros de busca incompletos", 
-                       size=18, color=ft.colors.ERROR),
+                       size=18, color=ft.Colors.ERROR),
                 ft.ElevatedButton("Voltar", 
                                 on_click=lambda e: page.go("/home"))
             ],
@@ -65,8 +65,6 @@ def View(page: ft.Page):
         ft.Divider()
     ])
     
-    # Results section
-    # ... (código anterior) ...
 
     # Results section
     if viagens_encontradas:
@@ -99,7 +97,10 @@ def View(page: ft.Page):
                             #ft.Spacer(),
                             ft.ElevatedButton(
                                 "Selecionar",
-                                on_click=lambda e, idx=i: page.go("/payment")
+                                on_click=lambda e, idx=i: search_controller.open_payment(
+                                    e,
+                                    id_viagem
+                                )
                             )
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
                     ]),
